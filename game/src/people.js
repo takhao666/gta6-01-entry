@@ -20,6 +20,8 @@ export function makePed(x, y, opts = {}) {
     shirt: pick(Math.random, SHIRTS),
     hostile: !!opts.hostile,
     health: opts.hostile ? 60 : 100,
+    label: opts.label || null, // named story characters (Lena) get a tag
+    stand: !!opts.stand, // stand still where placed (story characters)
     flee: 0,
     dead: false,
     shootTimer: 1 + Math.random(),
@@ -62,6 +64,7 @@ export function updatePeds(world, dt) {
   for (const ped of world.peds) {
     if (ped.dead) continue;
     ped.walkPhase += dt * 8;
+    if (ped.stand) continue; // story characters hold their spot
     const danger = world.gunfireTimer > 0 || (p.car && Math.hypot(ped.x - p.x, ped.y - p.y) < 130 && Math.abs(p.car.speed) > 200);
     if (danger) ped.flee = 2.5;
     if (ped.hostile) {
@@ -115,7 +118,7 @@ export function updatePeds(world, dt) {
   // Keep the streets populated near the player (capped, so this can never
   // grow without bound).
   const near = world.peds.filter((ped) => !ped.dead && Math.hypot(ped.x - p.x, ped.y - p.y) < 1100).length;
-  if (near < 16 && world.peds.length < 70) spawnPeds(world, Math.min(16 - near, 70 - world.peds.length));
+  if (near < 22 && world.peds.length < 90) spawnPeds(world, Math.min(22 - near, 90 - world.peds.length));
 }
 
 function pickSidewalkTarget(ped) {

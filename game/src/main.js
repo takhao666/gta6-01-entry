@@ -142,9 +142,9 @@ function createWorld() {
       this.storyComplete = false;
       this.screen = 'play';
       this.camera = { x: this.player.x, y: this.player.y };
-      spawnTraffic(this, 18);
-      spawnParked(this, 26);
-      spawnPeds(this, 34);
+      spawnTraffic(this, 28);
+      spawnParked(this, 32);
+      spawnPeds(this, 52);
       // A few cash and health pickups scattered around the city.
       const spots = [[900, 900], [2700, 900], [900, 2700], [2700, 2700], [1575, 2025], [2475, 1575]];
       for (const [x, y] of spots) {
@@ -403,10 +403,13 @@ window.addEventListener('keydown', (e) => {
 // --- boot --------------------------------------------------------------------
 world.reset();
 if (shotName) {
-  // Photo mode: stage a real scene, freeze it, draw it. No title screen.
+  // Photo mode: stage a real scene, freeze it, draw it. No title screen,
+  // and no toast banner: a notify() fired during staging (mission start,
+  // wanted level) would otherwise sit across the frame for 4 seconds.
   const staged = stageShot(shotName, world);
   world.screen = 'play';
   show(null);
+  document.getElementById('toast').classList.remove('show');
   document.title = `Solmar City — ${staged.name}`;
   renderer.draw(world);
   if (selfTest) document.title = 'SELFTEST OK';

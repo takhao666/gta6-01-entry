@@ -36,6 +36,7 @@ export function createRenderer(canvas) {
       drawCars(ctx, world, view);
       drawPeds(ctx, world, view);
       drawCops(ctx, world, view);
+      drawShots(ctx, world, view);
       drawPlayer(ctx, world);
       drawParticles(ctx, world);
       drawFloaters(ctx, world);
@@ -79,6 +80,50 @@ function drawGround(ctx, world, view) {
     const wy = city.beach.y + 150 + i * 26;
     if (wy < view.y0 || wy > view.y1) continue;
     ctx.fillRect(view.x0 + ((i * 397) % 700), wy, 90, 3);
+  }
+  // The pier juts from the beach road into the sea, with boats moored off it.
+  const pier = city.pier;
+  if (pier.y0 < view.y1 && pier.y1 > view.y0) {
+    ctx.fillStyle = '#8a6d3b';
+    ctx.fillRect(pier.x - 18, pier.y0, 36, pier.y1 - pier.y0);
+    ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+    ctx.lineWidth = 2;
+    for (let py = pier.y0 + 14; py < pier.y1; py += 16) {
+      ctx.beginPath();
+      ctx.moveTo(pier.x - 18, py);
+      ctx.lineTo(pier.x + 18, py);
+      ctx.stroke();
+    }
+    ctx.fillStyle = '#5d4a26';
+    for (let py = pier.y0 + 8; py < pier.y1; py += 32) {
+      ctx.fillRect(pier.x - 22, py, 6, 6);
+      ctx.fillRect(pier.x + 16, py, 6, 6);
+    }
+  }
+  for (const b of city.boats) {
+    if (!inView(view, b.x, b.y, 60)) continue;
+    ctx.save();
+    ctx.translate(b.x, b.y);
+    ctx.rotate(b.angle);
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.fillRect(-26, -8, 52, 16);
+    ctx.fillStyle = b.color;
+    ctx.beginPath();
+    ctx.moveTo(-26, -9);
+    ctx.lineTo(26, -9);
+    ctx.lineTo(20, 9);
+    ctx.lineTo(-20, 9);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = 'rgba(20,40,60,0.85)';
+    ctx.fillRect(-8, -14, 16, 8);
+    ctx.strokeStyle = '#5d4a26';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, -14);
+    ctx.lineTo(0, -26);
+    ctx.stroke();
+    ctx.restore();
   }
   // Sidewalks then roads.
   for (const c of city.centres) {
@@ -140,6 +185,27 @@ function drawGround(ctx, world, view) {
     ctx.fillStyle = '#5da244';
     ctx.beginPath();
     ctx.arc(t.x - 3, t.y - 3, t.r * 0.6, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  // Palms along the beachfront sidewalk.
+  for (const p of city.palms) {
+    if (!inView(view, p.x, p.y)) continue;
+    ctx.strokeStyle = '#7a5a34';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y + 10);
+    ctx.lineTo(p.x + 4, p.y - 12);
+    ctx.stroke();
+    ctx.fillStyle = '#2f7a3a';
+    for (let f = 0; f < 5; f += 1) {
+      const a = (f / 5) * Math.PI * 2 - Math.PI / 2;
+      ctx.beginPath();
+      ctx.ellipse(p.x + 4 + Math.cos(a) * 11, p.y - 12 + Math.sin(a) * 7, 12, 5, a, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.fillStyle = '#3f9a4a';
+    ctx.beginPath();
+    ctx.arc(p.x + 4, p.y - 12, 5, 0, Math.PI * 2);
     ctx.fill();
   }
   // Shop markers on the ground: a coloured pad with the shop's letter.
@@ -336,10 +402,51 @@ function drawPerson(ctx, x, y, angle, skin, shirt, walkPhase, dead) {
   ctx.restore();
 }
 
+function drawShots(ctx, world, view) {
+  // Bullets are simulated in player.js but were never drawn: a gunfight
+  // read as two dots staring at each other. Tracers make combat visible.
+  for (const s of world.playerShots) {
+    if (!inView(view, s.x, s.y, 40)) continue;
+    ctx.strokeStyle = '#fff2a0';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(s.x - Math.cos(s.angle) * 30, s.y - Math.sin(s.angle) * 30);
+    ctx.lineTo(s.x, s.y);
+    ctx.stroke();
+    ctx.fillStyle = '#fffbe0';
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  for (const s of world.enemyShots) {
+    if (!inView(view, s.x, s.y, 40)) continue;
+    ctx.strokeStyle = '#ff6b4a';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(s.x - Math.cos(s.angle) * 26, s.y - Math.sin(s.angle) * 26);
+    ctx.lineTo(s.x, s.y);
+    ctx.stroke();
+    ctx.fillStyle = '#ffb199';
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
 function drawPeds(ctx, world, view) {
   for (const ped of world.peds) {
     if (!inView(view, ped.x, ped.y)) continue;
     drawPerson(ctx, ped.x, ped.y, ped.angle, ped.skin, ped.shirt, ped.walkPhase, ped.dead);
+    if (ped.label && !ped.dead) {
+      // Named characters (Lena) get a name tag, so the story beat reads.
+      ctx.font = 'bold 13px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+      ctx.lineWidth = 3;
+      ctx.strokeText(ped.label, ped.x, ped.y - 26);
+      ctx.fillStyle = '#ffd76a';
+      ctx.fillText(ped.label, ped.x, ped.y - 26);
+    }
     if (ped.hostile && !ped.dead) {
       // Red ring marks gang members.
       ctx.strokeStyle = '#ff4d4d';

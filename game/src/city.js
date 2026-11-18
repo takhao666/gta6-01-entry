@@ -67,9 +67,24 @@ export function buildCity(seed = 20261117) {
       }
     }
   }
+  // Palm-lined beach road: a row of palms on the sidewalk strip just north
+  // of the south road, at block centres so none lands on a road.
+  const palms = [];
+  for (const px of [450, 900, 1350, 1800, 2250, 2700, 3150]) {
+    palms.push({ x: px + range(rng, -40, 40), y: 3312 + range(rng, -3, 3) });
+  }
+  // Boats moored off the pier in the sea, and the pier itself.
+  const boats = [];
+  const boatSpots = [[1450, 3490], [1900, 3535], [2150, 3480], [2600, 3520], [950, 3530]];
+  for (const [bx, by] of boatSpots) {
+    boats.push({ x: bx + range(rng, -30, 30), y: by + range(rng, -15, 15), angle: range(rng, -0.4, 0.4), color: pick(rng, ['#e8e4da', '#c0392b', '#2e86c1', '#f1c40f']) });
+  }
   return {
     buildings,
     trees,
+    palms,
+    boats,
+    pier: { x: 1700, y0: 3395, y1: 3560 },
     centres,
     park: { x: centres[3] + ROAD_W / 2, y: centres[3] + ROAD_W / 2, w: BLOCK - ROAD_W, h: BLOCK - ROAD_W },
     plaza: { x: centres[4] + ROAD_W / 2, y: centres[2] + ROAD_W / 2, w: BLOCK - ROAD_W, h: BLOCK - ROAD_W },

@@ -4,7 +4,7 @@
 [![rank](https://make.fun/badge/gta6-01/takhao666/gta6-01-entry/rank.svg)](https://make.fun/bounty/gta6-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=gta6-01)
 [![reward](https://make.fun/badge/gta6-01/takhao666/gta6-01-entry/reward.svg)](https://make.fun/bounty/gta6-01?utm_source=github&utm_medium=readme&utm_campaign=gta6-01)
 
-**Solmar City — Streets of Gold**: an original open-world crime game built for make.fun's "Make GTA 6" bounty. You are Jax Marlow, a driver for hire in a sun-soaked coastal city run by Viktor Hale. Explore the city on foot and by car, steal cars, outrun the Solmar PD under a 5-star wanted system, run six story missions for fixer Lena Cross, fight gang crews, and build your name — all in plain static files that run offline in desktop Chrome.
+**Solmar City — Streets of Gold**: an original open-world crime game built for make.fun's "Make GTA 6" bounty. You are Jax Marlow, a driver for hire in a sun-soaked coastal city run by Viktor Hale. Explore the city on foot and by car, steal cars, outrun the Solmar PD under a 5-star wanted system, run six story missions for fixer Lena Cross, fight gang crews, and build your name — all in plain static files that run offline in desktop Chrome. The south shore has a beach road lined with palms, a pier and moored boats; Lena herself waits at the plaza for your first pickup, and gunfights show real tracer fire.
 
 ## Run it
 

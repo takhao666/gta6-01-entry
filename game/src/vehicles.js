@@ -203,7 +203,7 @@ export function updateTraffic(world, dt) {
     return true;
   });
   const trafficCount = world.cars.filter((c) => c.traffic).length;
-  if (trafficCount < 14) spawnTraffic(world, 14 - trafficCount);
+  if (trafficCount < 20) spawnTraffic(world, 20 - trafficCount);
 }
 
 // --- police cars ---------------------------------------------------------------

@@ -121,6 +121,15 @@ function enterStage(world) {
       m.spawned.push(ped);
     }
   }
+  if (m.index === 0 && m.stage === 0) {
+    // Lena herself waits at the plaza so the pickup is a visible story
+    // beat, not a walk to an empty ring.
+    const lena = makePed(2075, 1210, { label: 'LENA', stand: true });
+    lena.shirt = '#ff4d8d';
+    lena.skin = '#f2c89b';
+    world.peds.push(lena);
+    m.spawned.push(lena);
+  }
   if (stage.type === 'collect') {
     m.crates = [];
     m.cratesTaken = 0;
