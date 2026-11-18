@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solmar City — Streets of Gold</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #10131a; font-family: 'Segoe UI', system-ui, sans-serif; }
+  #game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: crosshair; }
+  .overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(6, 10, 16, 0.72); z-index: 10; }
+  .overlay.visible { display: flex; }
+  .panel { background: linear-gradient(160deg, #1b2436, #0d1522); border: 2px solid #ffd76a; border-radius: 14px; padding: 34px 44px; max-width: 560px; text-align: center; color: #f2ede0; box-shadow: 0 18px 60px rgba(0,0,0,0.6); }
+  .panel h1 { margin: 0 0 4px; font-size: 54px; letter-spacing: 6px; color: #ffd76a; }
+  .panel h2 { margin: 0 0 14px; font-size: 17px; letter-spacing: 4px; color: #7fd4ff; font-weight: 600; }
+  .panel p { font-size: 15px; line-height: 1.55; color: #cfd6de; }
+  .panel .city { font-size: 13px; letter-spacing: 3px; color: #9aa7b5; margin-bottom: 18px; }
+  .btn { display: inline-block; margin: 6px; padding: 12px 26px; font-size: 16px; font-weight: 700; color: #10131a; background: #ffd76a; border: none; border-radius: 8px; cursor: pointer; }
+  .btn:hover { background: #ffe08a; }
+  .btn.ghost { background: transparent; color: #ffd76a; border: 2px solid #ffd76a; }
+  .controls { text-align: left; font-size: 14px; line-height: 1.9; color: #cfd6de; margin: 10px 0 18px; }
+  .controls b { color: #ffd76a; }
+  #toast { position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); background: rgba(8,12,18,0.85); color: #fff; border: 1px solid #ffd76a; padding: 10px 20px; border-radius: 8px; font-size: 15px; z-index: 5; opacity: 0; transition: opacity 0.25s; pointer-events: none; max-width: 80vw; text-align: center; }
+  #toast.show { opacity: 1; }
+  #status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+</style>
+</head>
+<body>
+<canvas id="game" aria-label="Solmar City: an open-world crime game. Drive, steal cars, run missions and lose the police."></canvas>
+<p id="status" role="status" aria-live="polite"></p>
+<div id="toast"></div>
+
+<div class="overlay" id="title-screen">
+  <div class="panel">
+    <h1>SOLMAR</h1>
+    <h2>STREETS OF GOLD</h2>
+    <div class="city" id="title-city">Solmar City</div>
+    <p>You are <b>Jax Marlow</b>, a driver for hire in a sun-soaked coastal city run by
+    <b>Viktor Hale</b>. His fixer <b>Lena Cross</b> has six jobs for you — if you can
+    stay ahead of the Solmar PD. Steal cars, run missions, build your name.</p>
+    <p>An original open-world crime game. No network needed — everything runs from these files.</p>
+    <button class="btn" id="btn-new">New Game</button>
+    <button class="btn ghost" id="btn-continue">Continue</button>
+    <button class="btn ghost" id="btn-help">How to Play</button>
+  </div>
+</div>
+
+<div class="overlay" id="help-screen">
+  <div class="panel">
+    <h2>HOW TO PLAY</h2>
+    <div class="controls">
+      <b>W A S D / Arrows</b> — walk or drive &nbsp;·&nbsp; <b>Shift</b> — sprint / handbrake<br>
+      <b>E</b> — get in / out of a car, use a shop &nbsp;·&nbsp; <b>Mouse</b> — aim, <b>Click</b> — shoot<br>
+      <b>F / Space</b> — punch &nbsp;·&nbsp; <b>1 / 2</b> — fists / pistol<br>
+      <b>L</b> — start the next mission &nbsp;·&nbsp; <b>P / Esc</b> — pause &nbsp;·&nbsp; <b>M</b> — mute<br>
+      <b>G</b> Gun Shop · <b>S</b> Pay &amp; Spray · <b>H</b> Hospital · <b>$</b> Safehouse (save)
+    </div>
+    <p>Steal cars, but the law notices. Wanted stars bring cruisers and foot officers —
+    break line of sight to cool down, or pay for a new paint job. Missions pay cash;
+    cash buys guns and ammo. Get wasted or busted and you lose money.</p>
+    <button class="btn" id="btn-help-back">Back</button>
+  </div>
+</div>
+
+<div class="overlay" id="pause-screen">
+  <div class="panel">
+    <h2>PAUSED</h2>
+    <p>Solmar City waits for no one — except right now.</p>
+    <button class="btn" id="btn-resume">Resume</button>
+    <button class="btn ghost" id="btn-quit-title">Quit to Title</button>
+  </div>
+</div>
+
+<div class="overlay" id="brief-screen">
+  <div class="panel">
+    <h2 id="brief-title">MISSION</h2>
+    <p id="brief-text"></p>
+    <p id="brief-reward" style="color:#ffd76a;font-weight:700;"></p>
+    <button class="btn" id="btn-brief-go">Go</button>
+  </div>
+</div>
+
+<div class="overlay" id="end-screen">
+  <div class="panel">
+    <h2 id="end-title">WASTED</h2>
+    <p id="end-text"></p>
+    <button class="btn" id="btn-respawn">Back on the Streets</button>
+  </div>
+</div>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
